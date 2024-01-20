@@ -887,3 +887,151 @@ from sklearn.manifold import LocallyLinearEmbedding
 
 embedding = LocallyLinearEmbedding(n_neighbors=2)
 projection = embedding.fit_transform(X)
+
+from matplotlib.animation import FuncAnimation
+
+# Redefining the Microtubule class for simplicity
+class Microtubule:
+    def __init__(self, length=100):
+        self.length = length
+        self.positions = np.zeros(length)
+
+    def simulate(self, step):
+        # Simple simulation: positions increment by a small random value
+        self.positions += np.random.randn(self.length) * 0.1
+        return self.positions
+
+# Create an instance of the Microtubule
+microtubule = Microtubule(length=100)
+
+# Set up the initial figure for animation
+fig, ax = plt.subplots(figsize=(12, 6))
+line, = ax.plot(microtubule.positions, label="Microtubule Position")
+ax.set_title("Real-Time Microtubule Simulation")
+ax.set_xlabel("Segment")
+ax.set_ylabel("Position")
+ax.legend()
+
+def animate(i):
+    """ Update function for animation """
+    positions = microtubule.simulate(i)
+    line.set_ydata(positions)  # Update the data.
+    return line,
+
+# Create an animation object
+ani = FuncAnimation(fig, animate, frames=100, interval=100, blit=True)
+
+plt.show()
+
+import networkx as nx
+from matplotlib.animation import FuncAnimation
+
+# Assuming AstrocyteNetwork class structure based on the provided description
+# Corrected AstrocyteNetwork class with p_connect as an instance variable
+class AstrocyteNetwork:
+    def __init__(self, num_astrocytes=100, p_connect=0.1):
+        self.num_astrocytes = num_astrocytes
+        self.p_connect = p_connect
+        self.g = nx.erdos_renyi_graph(num_astrocytes, p_connect)
+
+    def simulate(self, step):
+        # Use the instance variable self.p_connect
+        if step % 5 == 0:  # Every 5 steps, rewire
+            self.g = nx.erdos_renyi_graph(self.num_astrocytes, self.p_connect)
+        return self.g
+
+# Create an instance of AstrocyteNetwork
+astrocyte_network = AstrocyteNetwork(num_astrocytes=30, p_connect=0.15)
+
+# Set up initial figure for animation
+fig, ax = plt.subplots(figsize=(8, 8))
+pos = nx.spring_layout(astrocyte_network.g)  # Positioning of the nodes
+nx.draw(astrocyte_network.g, pos, ax=ax, with_labels=True, node_color="skyblue")
+
+def animate(i):
+    """ Update function for animation """
+    graph = astrocyte_network.simulate(i)
+    ax.clear()
+    nx.draw(graph, pos, ax=ax, with_labels=True, node_color="skyblue")
+    ax.set_title("Astrocyte Network Simulation - Step {}".format(i))
+
+# Create an animation object
+ani = FuncAnimation(fig, animate, frames=20, interval=500, repeat=False)
+
+plt.show()
+
+import torch
+
+# Assuming ExperienceOptimizer class structure based on the provided description
+class ExperienceOptimizer:
+    def __init__(self, params):
+        self.params = torch.nn.Parameter(torch.randn(*params) / 2)
+        self.opt = torch.optim.Adam([self.params], lr=0.05)
+        self.loss_history = []
+
+    def update(self):
+        self.opt.zero_grad()
+        loss = -self.params.sum()**2  # Example loss function
+        loss.backward()
+        self.opt.step()
+        self.loss_history.append(loss.item())
+
+# Create an instance of ExperienceOptimizer
+optimizer = ExperienceOptimizer(params=(10,))
+
+# Set up initial figure for animation
+fig, ax = plt.subplots(figsize=(12, 6))
+line, = ax.plot([], [], label="Loss Over Time")
+ax.set_title("Experience Optimizer Simulation")
+ax.set_xlabel("Iteration")
+ax.set_ylabel("Loss")
+ax.legend()
+
+def animate(i):
+    """ Update function for animation """
+    optimizer.update()
+    line.set_data(range(len(optimizer.loss_history)), optimizer.loss_history)
+    ax.set_xlim(0, len(optimizer.loss_history) + 1)
+    ax.set_ylim(min(optimizer.loss_history), max(optimizer.loss_history) + 1)
+    return line,
+
+# Create an animation object
+ani = FuncAnimation(fig, animate, frames=100, interval=100, blit=True)
+
+plt.show()
+
+# Assuming Optogenetics class structure based on the provided description
+class Optogenetics:
+    def __init__(self, num_cells=10):
+        self.num_cells = num_cells
+        self.cell_activity = [0] * num_cells  # Initial activity levels
+
+    def stimulate(self, light_intensity):
+        # Simulate cellular response to light intensity
+        # This is a placeholder for the actual response function
+        response = [light_intensity / (1 + abs(light_intensity - i)) for i in range(self.num_cells)]
+        self.cell_activity = response
+        return self.cell_activity
+
+# Create an instance of Optogenetics
+optogenetics = Optogenetics(num_cells=10)
+
+# Set up initial figure for animation
+fig, ax = plt.subplots(figsize=(12, 6))
+line, = ax.plot(optogenetics.cell_activity, label="Cellular Activity")
+ax.set_title("Optogenetics Simulation: Cellular Activity vs Light Intensity")
+ax.set_xlabel("Cell Index")
+ax.set_ylabel("Activity Level")
+ax.legend()
+
+def animate(i):
+    """ Update function for animation """
+    light_intensity = i / 10  # Example light intensity that changes over time
+    activity = optogenetics.stimulate(light_intensity)
+    line.set_ydata(activity)  # Update the data.
+    return line,
+
+# Create an animation object
+ani = FuncAnimation(fig, animate, frames=100, interval=100, blit=True)
+
+plt.show()
