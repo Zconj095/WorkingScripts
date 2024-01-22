@@ -4152,8 +4152,7 @@ ax1.set_ylabel('Insolation')
 
 ax2.plot(temps)  
 ax2.set_xlabel('Time (days)')
-ax2.set_ylabel('Temperature') 
-
+ax2.set_ylabel('Temperature'
 plt.title("Simulated Orbital Seasons")
 plt.tight_layout()
 plt.show()
@@ -4170,7 +4169,6 @@ class Plant:
 plant = Plant(8) # grows best above 8 degrees
 for temp in temps:
     plant.update(temp)
-
 
 
 
